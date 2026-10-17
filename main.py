@@ -5,7 +5,7 @@ import speech_recognition as sr
 #Install pyttsx3 fo text to speech conversion (user text -> computer's speech)
 import pyttsx3
 import musicLibrary #to play songs in this file
-
+import requests # to get apis
 #we need a recognizer to recognize the voice 
 recognizer = sr.Recognizer()
 
@@ -17,6 +17,8 @@ recognizer = sr.Recognizer()
 engine = pyttsx3.init('sapi5') # Force use of the native Windows audio architecture
 # Set speech pace rate slightly slower so it sounds natural
 engine.setProperty('rate', 175)
+#Set the news api key -> go to newsapi get ur api key from there
+newsapi = "d05f345fec4844e0a8c29c7a8ae2a670"
 
 def speak(text):
     print(f"[JARVIS] : {text}")  #To verify whats jarvis responding with
@@ -51,6 +53,27 @@ def processCommand(c):  #To process the cmnd ahead & excute the required task IM
         song = c.lower().split(" ")[1] #Ex play skyfall-> ["play" , "skyfall"] -> 1 = skyfall name in musicLibrary.py
         link = musicLibrary.music[song]  #Since in musicLibrary we've music named dict so to search tht
         webbrowser.open(link)
+
+    #for news fecth api
+    elif "news" in c.lower():
+        print("Fetching News")
+        print("Sending request to NewsAPI...")
+
+        r = requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}",timeout=15)
+
+        print("HTTP Status:", r.status_code)
+        print("Response:", r.text[:1000])
+        #using the requests library
+        r = requests.get(f"https://newsapi.org/v2/top-headlines?country=in&apiKey={newsapi}")
+        if r.status_code == 200:
+            data = r.json()
+
+            # Extract the articles
+            articles = data["articles"]
+
+            # Print each headline
+            for article in articles:
+                print(article["title"])
 
 
 if __name__ == "__main__":
