@@ -148,4 +148,66 @@ Based on that result, I switched from `pyttsx3` to Windows SAPI directly using P
  it stops recording and processes whatever you said up to that point,
  even if you are still talking.
 '''
+
+# NOTE : Removed newsapi module form the code , deleted the api key , also could've used this:-
+
+Do not panic, but you must act quickly. Because GitHub repositories are continuously crawled by automated scraper bots, you must treat your exposed API key as completely compromised. Simply deleting the line from your code and pushing it again will not protect you, because the key will still exist in your Git commit history. [1] (https://www.reddit.com/r/git/comments/1gnywgx/remove_api_key_from_commit_history/), [2] (https://www.freecodecamp.org/news/how-to-fix-a-leaked-api-key/)
+Follow these steps immediately to secure your project:
+
+Step 1: Revoke the Leaked Key Right Away (Most Important)
+
+The absolute first line of defense is making the leaked token useless. [1] (https://github.com/orgs/community/discussions/189652), [2] (https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository), [3] (https://checkmarx.com/learn/how-to-detect-and-remove-leaked-api-keys-tokens-and-passwords-from-code-repositories/)
+1. Log into your account on the NewsAPI Dashboard.
+2. Go to your credentials or account overview page.
+3. Look for the option to Regenerate, Rotate, or Delete your current API key.
+4. Generating a new key will instantly deactivate the old one (d85f34...), rendering the exposed key completely broken and useless to anyone trying to misuse it. [1] (https://docs.snyk.io/developer-tools/snyk-api/authentication-for-api/revoke-and-regenerate-a-snyk-api-token), [2] (https://resend.com/docs/knowledge-base/how-to-handle-a-leaked-api-key)
+
+Step 2: Hide the Secret Locally
+
+Now that your old key is dead and you have a new one, fix your project structure locally inside VS Code so it cannot happen again:
+1. In your root JARVIS folder, create a new file named .env.
+2. Paste your new API key inside it like this:text
+NEWS_API_KEY=your_brand_new_api_key_here
+Use code with caution.
+3. Open your .gitignore file and make sure these two lines are added to the bottom so Git stops tracking them:text
+.env
+.venv/
+Use code with caution.
+ [1] (https://www.freecodecamp.org/news/how-to-fix-a-leaked-api-key/)
+
+Step 3: Clear the Leak from Git History
+
+Since you are working on a personal repository (JARVIS) and don't have to worry about breaking teammate branches, the fastest way to scrub the history clean is using a quick tool called git-filter-repo. [1] (https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository), [2] (https://www.freecodecamp.org/news/how-to-fix-a-leaked-api-key/), [3] (https://github.com/orgs/community/discussions/189652)
+Open your VS Code terminal and run the following commands:
+powershell
+# 1. Install the history cleaner tool via Python pip
+pip install git-filter-repo
+
+# 2. Run it to completely scrub the literal text string of your leaked key across all past commits
+git filter-repo --replace-text <(echo "d85f34fec4844e0a8c29c7a8ae2a670==>REDACTED_KEY")
+Use code with caution.
+(Note: If you run into syntax issues on Windows with the text replacement command, you can alternatively delete the repository entirely from GitHub, make sure your .gitignore is working locally, recreate a fresh repo, and push your clean code).
+If you choose to purge it using the command line tool, finalize the sync to your remote vault by forcing the clean history up: [1] (https://stackoverflow.com/questions/40865425/how-to-remove-sensitive-data-api-key-across-git-commit-history), [2] (https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
+powershell
+git push origin main --force
+Use code with caution.
+
+Step 4: Use the Key Safely in Python
+
+To make your python app read the key securely from the hidden .env file without hardcoding it, install the python-dotenv manager: [1] (https://www.freecodecamp.org/news/how-to-fix-a-leaked-api-key/)
+powershell
+pip install python-dotenv
+Use code with caution.
+Then update the top of your main.py file to load it dynamically:
+python
+import os
+from dotenv import load_dotenv
+
+# Load the hidden environment variables
+load_dotenv()
+
+# Securely grab the key from your hidden local file
+newsapi = os.getenv("NEWS_API_KEY")
+Use code with caution.
+Let me know if you hit any roadblocks while rotating your key on the NewsAPI portal or if you need help setting up the python-dotenv code structure!
                 
