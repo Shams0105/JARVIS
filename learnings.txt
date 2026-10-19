@@ -211,3 +211,11 @@ newsapi = os.getenv("NEWS_API_KEY")
 Use code with caution.
 Let me know if you hit any roadblocks while rotating your key on the NewsAPI portal or if you need help setting up the python-dotenv code structure!
                 
+#.env file:
+
+used to hide secret data
+such as APIs
+passwords ,etc
+Just pick up the api key from code & put it into .env file before pushing on github
+public viewers cannot access ur key even after cloning or copying itits encrypted ie cannot be seen
+since its inside the .env file
