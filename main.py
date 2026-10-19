@@ -18,7 +18,7 @@ recognizer = sr.Recognizer()
 
 
 #Set the news api key -> go to newsapi get ur api key from there
-#Removed the news module , wasnt very efficent 
+newsapi = 'd05f345fec4844e0a8c29c7a8ae2a670'
 
 speaker = win32com.client.Dispatch("SAPI.SpVoice") #Powershell's native speech engine
 
@@ -61,6 +61,19 @@ def processCommand(c):  #To process the cmnd ahead & excute the required task IM
         link = musicLibrary.music[song]  #Since in musicLibrary we've music named dict so to search tht
         webbrowser.open(link)
 
+    #For news ,odule
+    elif "news" in c.lower():
+        r = requests.get(f"https://newsapi.org/v2/top-headlines?country=in&apiKey={newsapi}")
+        if r.status_code == 200:
+            # Parse the JSON response
+            data = r.json()
+            
+            # Extract the articles
+            articles = data.get('articles', [])
+            
+            # Print the headlines
+            for article in articles:
+                speak(article['title'])
     
 
 
