@@ -18,7 +18,7 @@ recognizer = sr.Recognizer()
 
 
 #Set the news api key -> go to newsapi get ur api key from there
-newsapi = "d05f345fec4844e0a8c29c7a8ae2a670"
+#Removed the news module , wasnt very efficent 
 
 speaker = win32com.client.Dispatch("SAPI.SpVoice") #Powershell's native speech engine
 
@@ -61,26 +61,7 @@ def processCommand(c):  #To process the cmnd ahead & excute the required task IM
         link = musicLibrary.music[song]  #Since in musicLibrary we've music named dict so to search tht
         webbrowser.open(link)
 
-    #for news fecth api
-    elif "news" in c.lower():
-        speak("Fetching News")
-        print("Sending request to NewsAPI...")
-
-        r = requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}",timeout=15)
-
-        print("HTTP Status:", r.status_code)
-        print("Response:", r.text[:1000])
-        #using the requests library
-        r = requests.get(f"https://newsapi.org/v2/top-headlines?country=in&apiKey={newsapi}")
-        if r.status_code == 200:
-            data = r.json()
-
-            # Extract the articles
-            articles = data["articles"]
-
-            # Print each headline
-            for article in articles:
-                speak(article["title"])
+    
 
 
 if __name__ == "__main__":
@@ -105,7 +86,7 @@ if __name__ == "__main__":
             with sr.Microphone() as source:
                 print("Listening for the wake word!")
                 r.adjust_for_ambient_noise(source, duration=0.5) # Reduces microphone background static
-                audio = r.listen(source,timeout=10,phrase_time_limit=13)
+                audio = r.listen(source,timeout=5,phrase_time_limit=13)
                 #imp note abt timeout & timelimit in -> learnings.txt
                 
             word = r.recognize_google(audio)  #at start listen for 1 word ie jarvis(wake word)
